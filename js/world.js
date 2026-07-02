@@ -1,5 +1,3 @@
-import { BLOCKS, BLOCK_TEXTURES, getBlockColor } from './blocks.js';
-
 const CHUNK_SIZE = 16;
 const CHUNK_HEIGHT = 64;
 const TERRAIN_SCALE = 50;
@@ -15,7 +13,7 @@ class SimplexNoise {
     }
 }
 
-export class World {
+class World {
     constructor(scene) {
         this.scene = scene;
         this.chunks = new Map();

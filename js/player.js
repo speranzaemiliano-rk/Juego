@@ -1,6 +1,4 @@
-import { BLOCKS } from './blocks.js';
-
-export class Player {
+class Player {
     constructor(camera, world) {
         this.camera = camera;
         this.world = world;

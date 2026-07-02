@@ -1,4 +1,4 @@
-export const BLOCKS = {
+const BLOCKS = {
     EMPTY: 0,
     GRASS: 1,
     DIRT: 2,
@@ -7,7 +7,7 @@ export const BLOCKS = {
     WOOD: 5
 };
 
-export const BLOCK_TEXTURES = {
+const BLOCK_TEXTURES = {
     [BLOCKS.GRASS]: { color: 0x2d8f2d },
     [BLOCKS.DIRT]: { color: 0x8b6f47 },
     [BLOCKS.STONE]: { color: 0x7f7f7f },
@@ -15,7 +15,7 @@ export const BLOCK_TEXTURES = {
     [BLOCKS.WOOD]: { color: 0x6b4423 }
 };
 
-export const BLOCK_NAMES = {
+const BLOCK_NAMES = {
     [BLOCKS.GRASS]: 'Pasto',
     [BLOCKS.DIRT]: 'Tierra',
     [BLOCKS.STONE]: 'Piedra',
@@ -23,11 +23,11 @@ export const BLOCK_NAMES = {
     [BLOCKS.WOOD]: 'Madera'
 };
 
-export function getBlockName(blockId) {
+function getBlockName(blockId) {
     return BLOCK_NAMES[blockId] || 'Desconocido';
 }
 
-export function getBlockColor(blockId) {
+function getBlockColor(blockId) {
     const tex = BLOCK_TEXTURES[blockId];
     return tex ? tex.color : 0xffffff;
 }

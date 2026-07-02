@@ -1,6 +1,3 @@
-import { World } from './world.js';
-import { Player } from './player.js';
-
 let scene, camera, renderer, world, player;
 
 function init() {
@@ -83,5 +80,5 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// Start the game
-init();
+// Start the game when page loads
+window.addEventListener('load', init);
