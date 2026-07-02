@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft-like Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div id="game-container"></div>
+
+    <div id="hud">
+        <div id="inventory" class="inventory-bar">
+            <div class="slot selected" data-block="1">🟩</div>
+            <div class="slot" data-block="2">🟫</div>
+            <div class="slot" data-block="3">⬜</div>
+            <div class="slot" data-block="4">🟨</div>
+            <div class="slot" data-block="5">🟶</div>
+        </div>
+
+        <div id="crosshair" class="crosshair">
+            <div class="crosshair-h"></div>
+            <div class="crosshair-v"></div>
+        </div>
+
+        <div id="info">
+            <div id="coords">X: 0 Y: 0 Z: 0</div>
+            <div id="fps">FPS: 0</div>
+        </div>
+    </div>
+
+    <div id="instructions">
+        <p><strong>Controles:</strong></p>
+        <p>W/A/S/D - Movimiento | Espacio - Saltar | Shift - Volar</p>
+        <p>Click Izq - Destruir | Click Der - Construir | Rueda - Cambiar bloque</p>
+    </div>
+
+    <script src="js/blocks.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

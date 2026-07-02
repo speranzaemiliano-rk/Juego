@@ -1,0 +1,13 @@
+{
+  "name": "minecraft-like-game",
+  "version": "1.0.0",
+  "description": "A Minecraft-like voxel game built with Three.js",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "dependencies": {
+    "three": "^r128"
+  }
+}
