@@ -16,7 +16,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
 
     // Lighting
@@ -38,7 +38,7 @@ function init() {
     world = new World(scene);
 
     // Player
-    player = new Player(camera, world);
+    player = new Player(camera, world, scene);
 
     // Initial chunk loading
     world.updateChunksAround(player.position.x, player.position.z);

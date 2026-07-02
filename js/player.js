@@ -1,10 +1,19 @@
 class Player {
-    constructor(camera, world) {
+    constructor(camera, world, scene) {
         this.camera = camera;
         this.world = world;
+        this.scene = scene;
         this.velocity = new THREE.Vector3();
-        this.position = new THREE.Vector3(8, 40, 8);
-        this.camera.position.copy(this.position);
+        // Aparecer sobre la Av. 9 de Julio, mirando al Obelisco
+        this.position = new THREE.Vector3(6, 26, 30);
+
+        this.yaw = 0;
+        this.pitch = 0;
+        this.mouseSensitivity = 0.002;
+
+        // 0 = primera persona, 1 = tercera persona (se puede arrancar con ?vista=3)
+        this.cameraMode = new URLSearchParams(location.search).get('vista') === '3' ? 1 : 0;
+        this.thirdPersonDistance = 4.5;
 
         this.keys = {};
         this.flying = false;
@@ -15,13 +24,54 @@ class Player {
         this.gravity = -0.01;
         this.selectedBlock = 1; // Grass
 
-        this.raycaster = new THREE.Raycaster();
         this.lastBreakTime = 0;
         this.lastPlaceTime = 0;
         this.breakCooldown = 100;
         this.placeCooldown = 100;
 
+        this.createPlayerModel();
         this.setupControls();
+        this.updateCamera();
+    }
+
+    createPlayerModel() {
+        const group = new THREE.Group();
+
+        const addBox = (w, h, d, color, x, y, z) => {
+            const mesh = new THREE.Mesh(
+                new THREE.BoxGeometry(w, h, d),
+                new THREE.MeshLambertMaterial({ color })
+            );
+            mesh.position.set(x, y, z);
+            group.add(mesh);
+            return mesh;
+        };
+
+        // Piernas (pantalón azul oscuro)
+        addBox(0.24, 0.75, 0.24, 0x2a2a6e, -0.13, 0.375, 0);
+        addBox(0.24, 0.75, 0.24, 0x2a2a6e, 0.13, 0.375, 0);
+        // Torso (remera celeste)
+        addBox(0.5, 0.75, 0.25, 0x2e8bc0, 0, 1.125, 0);
+        // Brazos (piel en las puntas quedaría mejor, pero simple)
+        addBox(0.24, 0.75, 0.24, 0x2e8bc0, -0.38, 1.125, 0);
+        addBox(0.24, 0.75, 0.24, 0x2e8bc0, 0.38, 1.125, 0);
+        // Cabeza (piel)
+        addBox(0.5, 0.5, 0.5, 0xd8a988, 0, 1.75, 0);
+        // Ojos (para saber hacia dónde mira: el frente es -Z)
+        addBox(0.08, 0.08, 0.02, 0x222222, -0.12, 1.8, -0.26);
+        addBox(0.08, 0.08, 0.02, 0x222222, 0.12, 1.8, -0.26);
+
+        group.visible = false;
+        this.scene.add(group);
+        this.model = group;
+    }
+
+    getForward() {
+        return new THREE.Vector3(
+            -Math.sin(this.yaw) * Math.cos(this.pitch),
+            Math.sin(this.pitch),
+            -Math.cos(this.yaw) * Math.cos(this.pitch)
+        );
     }
 
     setupControls() {
@@ -34,10 +84,25 @@ class Player {
             if (e.key === 'Shift') {
                 this.flying = !this.flying;
             }
+            if (e.key.toLowerCase() === 'v') {
+                this.cameraMode = this.cameraMode === 0 ? 1 : 0;
+            }
+            if (e.key >= '1' && e.key <= '5') {
+                this.selectedBlock = parseInt(e.key);
+                this.updateInventoryUI();
+            }
         });
 
         document.addEventListener('keyup', (e) => {
             this.keys[e.key.toLowerCase()] = false;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (document.pointerLockElement !== document.body) return;
+            this.yaw -= e.movementX * this.mouseSensitivity;
+            this.pitch -= e.movementY * this.mouseSensitivity;
+            const maxPitch = Math.PI / 2 - 0.01;
+            this.pitch = Math.max(-maxPitch, Math.min(maxPitch, this.pitch));
         });
 
         document.addEventListener('mousedown', (e) => {
@@ -55,7 +120,7 @@ class Player {
                 this.selectedBlock = this.selectedBlock === 1 ? 5 : this.selectedBlock - 1;
             }
             this.updateInventoryUI();
-        });
+        }, { passive: false });
 
         // Inventory slots
         document.querySelectorAll('.slot').forEach(slot => {
@@ -67,8 +132,9 @@ class Player {
 
         // Lock pointer on click
         document.addEventListener('click', () => {
-            document.body.requestPointerLock = document.body.requestPointerLock || document.body.mozRequestPointerLock;
-            document.body.requestPointerLock();
+            if (document.pointerLockElement !== document.body) {
+                document.body.requestPointerLock();
+            }
         });
     }
 
@@ -94,14 +160,9 @@ class Player {
         if (now - this.lastBreakTime < this.breakCooldown) return;
         this.lastBreakTime = now;
 
-        const direction = new THREE.Vector3(0, 0, -1);
-        direction.applyQuaternion(this.camera.quaternion);
-        this.raycaster.set(this.camera.position, direction);
-
-        const blocks = this.raycastBlocks(5);
-        if (blocks.length > 0) {
-            const block = blocks[0];
-            this.world.setBlock(block.x, block.y, block.z, BLOCKS.EMPTY);
+        const hit = this.raycastBlocks(5);
+        if (hit) {
+            this.world.setBlock(hit.block.x, hit.block.y, hit.block.z, BLOCKS.EMPTY);
         }
     }
 
@@ -110,51 +171,78 @@ class Player {
         if (now - this.lastPlaceTime < this.placeCooldown) return;
         this.lastPlaceTime = now;
 
-        const direction = new THREE.Vector3(0, 0, -1);
-        direction.applyQuaternion(this.camera.quaternion);
-        this.raycaster.set(this.camera.position, direction);
+        const hit = this.raycastBlocks(5);
+        if (hit && hit.prev) {
+            // Colocar en la celda vacía justo antes del bloque impactado
+            const px = hit.prev.x, py = hit.prev.y, pz = hit.prev.z;
 
-        const blocks = this.raycastBlocks(5);
-        if (blocks.length > 0) {
-            const block = blocks[0];
-            // Colocar bloque adelante del bloque roto
-            const offset = direction.clone().normalize().multiplyScalar(1.1);
-            const newX = block.x + offset.x;
-            const newY = block.y + offset.y;
-            const newZ = block.z + offset.z;
+            // No colocar un bloque encima del propio jugador
+            const feetY = Math.floor(this.position.y - 1.6);
+            const headY = Math.floor(this.position.y);
+            const sameColumn = px === Math.round(this.position.x) && pz === Math.round(this.position.z);
+            if (sameColumn && py >= feetY && py <= headY) return;
 
-            this.world.setBlock(
-                Math.round(newX),
-                Math.round(newY),
-                Math.round(newZ),
-                this.selectedBlock
-            );
+            this.world.setBlock(px, py, pz, this.selectedBlock);
         }
     }
 
     raycastBlocks(distance) {
-        const direction = new THREE.Vector3(0, 0, -1);
-        direction.applyQuaternion(this.camera.quaternion);
-
-        const blocks = [];
-        const step = 0.1;
+        const direction = this.getForward();
+        const step = 0.05;
+        let prev = null;
 
         for (let d = 0; d < distance; d += step) {
-            const point = this.camera.position.clone().addScaledVector(direction, d);
+            const point = this.position.clone().addScaledVector(direction, d);
+            const bx = Math.round(point.x);
+            const by = Math.round(point.y);
+            const bz = Math.round(point.z);
             const block = this.world.getBlock(point.x, point.y, point.z);
 
             if (block !== BLOCKS.EMPTY) {
-                blocks.push({
-                    x: Math.round(point.x),
-                    y: Math.round(point.y),
-                    z: Math.round(point.z),
+                return {
+                    block: { x: bx, y: by, z: bz },
+                    prev,
                     distance: d
-                });
-                break;
+                };
+            }
+
+            if (!prev || prev.x !== bx || prev.y !== by || prev.z !== bz) {
+                prev = { x: bx, y: by, z: bz };
             }
         }
 
-        return blocks;
+        return null;
+    }
+
+    updateCamera() {
+        if (this.cameraMode === 0) {
+            // Primera persona
+            this.camera.position.copy(this.position);
+            this.camera.rotation.order = 'YXZ';
+            this.camera.rotation.set(this.pitch, this.yaw, 0);
+            this.model.visible = false;
+        } else {
+            // Tercera persona: cámara detrás del jugador
+            const forward = this.getForward();
+            let dist = this.thirdPersonDistance;
+
+            // Evitar que la cámara atraviese bloques
+            for (let d = 0.5; d <= this.thirdPersonDistance; d += 0.25) {
+                const p = this.position.clone().addScaledVector(forward, -d);
+                if (this.world.getBlock(p.x, p.y, p.z) !== BLOCKS.EMPTY) {
+                    dist = Math.max(0.5, d - 0.4);
+                    break;
+                }
+            }
+
+            this.camera.position.copy(this.position).addScaledVector(forward, -dist);
+            this.camera.lookAt(this.position);
+            this.model.visible = true;
+        }
+
+        // Posicionar el modelo (pies del jugador) y orientarlo según el yaw
+        this.model.position.set(this.position.x, this.position.y - 1.6, this.position.z);
+        this.model.rotation.y = this.yaw;
     }
 
     update() {
@@ -167,7 +255,7 @@ class Player {
 
         if (direction.length() > 0) {
             direction.normalize();
-            direction.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.camera.rotation.y);
+            direction.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw);
 
             if (this.flying) {
                 this.velocity.copy(direction).multiplyScalar(this.moveSpeed);
@@ -246,14 +334,11 @@ class Player {
 
         // Límite inferior
         if (this.position.y < -100) {
-            this.position.y = 32;
-            this.position.x = 8;
-            this.position.z = 8;
+            this.position.set(6, 26, 30);
             this.velocity.set(0, 0, 0);
         }
 
-        // Actualizar cámara
-        this.camera.position.copy(this.position);
+        this.updateCamera();
 
         // Actualizar UI de coordenadas
         document.getElementById('coords').textContent =
