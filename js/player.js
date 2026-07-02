@@ -5,7 +5,15 @@ class Player {
         this.scene = scene;
         this.velocity = new THREE.Vector3();
         // Aparecer sobre la Av. 9 de Julio, mirando al Obelisco
-        this.position = new THREE.Vector3(6, 26, 30);
+        // (se puede aparecer en otro lado con ?x=...&z=...)
+        const q = new URLSearchParams(location.search);
+        const sx = parseFloat(q.get('x'));
+        const sz = parseFloat(q.get('z'));
+        if (!isNaN(sx) || !isNaN(sz)) {
+            this.position = new THREE.Vector3(isNaN(sx) ? 6 : sx, 45, isNaN(sz) ? 30 : sz);
+        } else {
+            this.position = new THREE.Vector3(6, 26, 30);
+        }
 
         this.yaw = 0;
         this.pitch = 0;
@@ -152,6 +160,7 @@ class Player {
         if (this.isGrounded) {
             this.velocity.y += this.jumpPower;
             this.isGrounded = false;
+            if (typeof SFX !== 'undefined') SFX.saltar();
         }
     }
 
@@ -163,6 +172,7 @@ class Player {
         const hit = this.raycastBlocks(5);
         if (hit) {
             this.world.setBlock(hit.block.x, hit.block.y, hit.block.z, BLOCKS.EMPTY);
+            if (typeof SFX !== 'undefined') SFX.romper();
         }
     }
 
@@ -183,6 +193,7 @@ class Player {
             if (sameColumn && py >= feetY && py <= headY) return;
 
             this.world.setBlock(px, py, pz, this.selectedBlock);
+            if (typeof SFX !== 'undefined') SFX.colocar();
         }
     }
 

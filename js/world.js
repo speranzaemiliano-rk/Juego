@@ -103,6 +103,90 @@ class World {
             return;
         }
 
+        // --- Casa Rosada (hacia el río, al este de la avenida) ---
+        if (wx >= 36 && wx <= 60 && wz >= -38 && wz <= -28) {
+            setV(GROUND, BLOCKS.MARBLE);
+            const esTorre = wx >= 45 && wx <= 51 && wz >= -36 && wz <= -30;
+            const h = esTorre ? 13 : 9;
+            const esBorde = wx === 36 || wx === 60 || wz === -38 || wz === -28;
+            for (let y = GROUND + 1; y <= GROUND + h; y++) {
+                const piso = y - (GROUND + 1);
+                const esVentana = esBorde && piso % 3 === 1 && wx % 2 === 0;
+                setV(y, esVentana ? BLOCKS.MARBLE : BLOCKS.PINK);
+            }
+            // Puerta de entrada (frente sur)
+            if (wz === -28 && wx >= 47 && wx <= 49) {
+                setV(GROUND + 1, BLOCKS.EMPTY);
+                setV(GROUND + 2, BLOCKS.EMPTY);
+                setV(GROUND + 3, BLOCKS.EMPTY);
+            }
+            return;
+        }
+
+        // --- Plaza de Mayo (frente a la Casa Rosada) ---
+        if (wx >= 38 && wx <= 58 && wz >= -26 && wz <= -16) {
+            const esSenda = wx === 48 || wz === -21;
+            setV(GROUND, esSenda ? BLOCKS.MARBLE : BLOCKS.GRASS);
+            // Pirámide de Mayo
+            if (wx === 48 && wz === -21) {
+                for (let y = GROUND + 1; y <= GROUND + 5; y++) setV(y, BLOCKS.MARBLE);
+            }
+            return;
+        }
+
+        // --- Floralis Genérica (plaza al oeste) ---
+        {
+            const fdx = wx + 41;
+            const fdz = wz + 36;
+            const fd = Math.sqrt(fdx * fdx + fdz * fdz);
+            if (fd <= 7.5) {
+                // Espejo de agua alrededor de la flor
+                if (fd > 4.5) setV(GROUND, BLOCKS.MARBLE);
+                else if (fd > 1.5) setV(GROUND, BLOCKS.WATER);
+                else setV(GROUND, BLOCKS.MARBLE);
+
+                // Tallo
+                if (fd < 0.8) {
+                    for (let y = GROUND + 1; y <= GROUND + 5; y++) setV(y, BLOCKS.METAL);
+                }
+                // Pétalos: anillos metálicos que se abren hacia arriba
+                const anillo = Math.round(fd);
+                if (anillo >= 1 && anillo <= 4) {
+                    setV(GROUND + 4 + anillo, BLOCKS.METAL);
+                }
+                return;
+            }
+        }
+
+        // --- La Bombonera (barrio de La Boca, al sudoeste) ---
+        if (wx >= -88 && wx <= -56 && wz >= 40 && wz <= 72) {
+            const bx = Math.min(wx + 88, -56 - wx);
+            const bz = Math.min(wz - 40, 72 - wz);
+            const borde = Math.min(bx, bz);
+
+            if (borde <= 2) {
+                // Pared exterior azul con banda amarilla arriba
+                setV(GROUND, BLOCKS.SIDEWALK);
+                const esEntrada = wz <= 42 && wx >= -75 && wx <= -69;
+                if (!esEntrada) {
+                    for (let y = GROUND + 1; y <= GROUND + 13; y++) {
+                        setV(y, y >= GROUND + 11 ? BLOCKS.AMARILLO : BLOCKS.AZUL_BOCA);
+                    }
+                }
+            } else if (borde <= 5) {
+                // Tribunas escalonadas
+                setV(GROUND, BLOCKS.SIDEWALK);
+                const alt = (6 - borde) * 2;
+                for (let y = GROUND + 1; y <= GROUND + alt; y++) {
+                    setV(y, BLOCKS.AZUL_BOCA);
+                }
+            } else {
+                // La cancha
+                setV(GROUND, BLOCKS.GRASS);
+            }
+            return;
+        }
+
         // --- Cuadrícula de manzanas ---
         const m = this.manzanaInfo(wx, wz);
 
