@@ -4,15 +4,30 @@ Un juego tipo Minecraft desarrollado con **Three.js** y JavaScript puro. Genera 
 
 ## 🎮 Características
 
-- **Mundo procedural infinito**: Generación de terreno usando ruido Perlin
-- **Chunks**: Sistema de chunks para optimizar rendering
-- **5 tipos de bloques**: Pasto, Tierra, Piedra, Arena, Madera
+- **Mapa estilo Ciudad de Buenos Aires**: cuadrícula de manzanas con edificios, veredas, calles, plazas con árboles, Av. 9 de Julio, Obelisco, Casa Rosada con Plaza de Mayo, Floralis Genérica, La Bombonera y el Río de la Plata con costanera
+- **Tráfico**: autos y colectivos circulando por la 9 de Julio
+- **Ciclo de día y noche** (2 minutos por ciclo)
+- **Vista en primera y tercera persona** (tecla V)
+- **Mirar con el mouse** (pointer lock)
 - **Construcción y destrucción**: Click izquierdo para destruir, click derecho para construir
+- **Efectos de sonido** generados con WebAudio (romper, colocar, saltar)
 - **Movimiento fluido**: WASD para movimiento, Espacio para saltar
 - **Modo volar**: Presiona Shift para activar/desactivar vuelo
 - **Gravedad y colisiones**: Física básica realista
 - **HUD completo**: Contador de FPS, coordenadas del jugador, inventario visible
-- **Selector de bloques**: Rueda del ratón para cambiar bloques
+- **Selector de bloques**: Rueda del ratón o teclas 1-5
+
+### 🗺️ Lugares para visitar
+
+| Lugar | Cómo llegar |
+|---|---|
+| Obelisco | Estás ahí al aparecer (X:0, Z:0) |
+| Río de la Plata | Caminá hacia adelante (norte) por la avenida |
+| Casa Rosada y Plaza de Mayo | X:48, Z:-25 |
+| Floralis Genérica | X:-41, Z:-36 |
+| La Bombonera | X:-72, Z:56 |
+
+También podés aparecer directo en un lugar con parámetros de URL: `?x=-72&z=90` (y `?vista=3` para arrancar en tercera persona).
 
 ## 🚀 Cómo jugar
 

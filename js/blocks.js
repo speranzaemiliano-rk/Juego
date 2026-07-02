@@ -13,7 +13,11 @@ const BLOCKS = {
     WINDOW: 11,
     WATER: 12,
     LEAVES: 13,
-    MARBLE: 14
+    MARBLE: 14,
+    PINK: 15,
+    METAL: 16,
+    AZUL_BOCA: 17,
+    AMARILLO: 18
 };
 
 const BLOCK_TEXTURES = {
@@ -30,7 +34,11 @@ const BLOCK_TEXTURES = {
     [BLOCKS.WINDOW]: { color: 0x7ec8e3 },
     [BLOCKS.WATER]: { color: 0x4a7c9b },
     [BLOCKS.LEAVES]: { color: 0x246b24 },
-    [BLOCKS.MARBLE]: { color: 0xefefe6 }
+    [BLOCKS.MARBLE]: { color: 0xefefe6 },
+    [BLOCKS.PINK]: { color: 0xd98b98 },
+    [BLOCKS.METAL]: { color: 0xb8bcc4 },
+    [BLOCKS.AZUL_BOCA]: { color: 0x14508c },
+    [BLOCKS.AMARILLO]: { color: 0xf5c518 }
 };
 
 const BLOCK_NAMES = {
@@ -47,7 +55,11 @@ const BLOCK_NAMES = {
     [BLOCKS.WINDOW]: 'Ventana',
     [BLOCKS.WATER]: 'Agua',
     [BLOCKS.LEAVES]: 'Hojas',
-    [BLOCKS.MARBLE]: 'Mármol'
+    [BLOCKS.MARBLE]: 'Mármol',
+    [BLOCKS.PINK]: 'Rosado',
+    [BLOCKS.METAL]: 'Metal',
+    [BLOCKS.AZUL_BOCA]: 'Azul',
+    [BLOCKS.AMARILLO]: 'Amarillo'
 };
 
 function getBlockName(blockId) {

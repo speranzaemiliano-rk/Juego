@@ -1,4 +1,9 @@
-let scene, camera, renderer, world, player;
+let scene, camera, renderer, world, player, traffic;
+
+// Ciclo de día y noche
+const DURACION_DIA = 120; // segundos por ciclo completo
+const CIELO_DIA = new THREE.Color(0x87ceeb);
+const CIELO_NOCHE = new THREE.Color(0x0b1230);
 
 function init() {
     // Scene
@@ -40,6 +45,9 @@ function init() {
     // Player
     player = new Player(camera, world, scene);
 
+    // Tráfico en la 9 de Julio
+    traffic = new Traffic(scene);
+
     // Initial chunk loading
     world.updateChunksAround(player.position.x, player.position.z);
 
@@ -57,6 +65,15 @@ function init() {
         // Update
         player.update();
         world.updateChunksAround(player.position.x, player.position.z);
+        traffic.update();
+
+        // Ciclo día/noche
+        const t = (Date.now() % (DURACION_DIA * 1000)) / (DURACION_DIA * 1000);
+        const luzDia = Math.max(0, Math.min(1, Math.cos(t * Math.PI * 2) * 1.5 + 0.5));
+        scene.background.copy(CIELO_NOCHE).lerp(CIELO_DIA, luzDia);
+        scene.fog.color.copy(scene.background);
+        directionalLight.intensity = 0.1 + 0.7 * luzDia;
+        ambientLight.intensity = 0.25 + 0.45 * luzDia;
 
         // FPS counter
         frameCount++;
