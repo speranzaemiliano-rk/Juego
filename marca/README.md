@@ -7,6 +7,7 @@ Abrí **`index.html`** en el navegador para ver los tres conceptos comparados.
 
 | Nombre | Idea | Isotipo | Color base |
 |--------|------|---------|------------|
+| **FRS Sistemas** | Iniciales de la familia: Felipe, Regina, Speranza (= "esperanza") | Tres barras ascendentes (iniciales + crecimiento) | Verde esmeralda `#10B981` |
 | **Gesta** ⭐ | Lleva "gestión" adentro; además "gesta" = hazaña/logro | Panel/dial + flecha de crecimiento | Índigo `#6366F1` |
 | **Timón** | Tenés el control y el rumbo del negocio | Rueda de timón | Verde azulado `#0F766E` |
 | **Norte** | "Tener un norte": claridad y dirección | Rosa de los vientos | Azul noche `#0B1F3A` + dorado |
@@ -16,7 +17,7 @@ Abrí **`index.html`** en el navegador para ver los tres conceptos comparados.
 ## Archivos
 
 - `index.html` — página para comparar los tres (nombres + logos + paletas).
-- `gesta.svg`, `timon.svg`, `norte.svg` — logo completo (isotipo + texto) de cada concepto, en vectorial.
+- `frs.svg`, `gesta.svg`, `timon.svg`, `norte.svg` — logo completo (isotipo + texto) de cada concepto, en vectorial.
 
 ## Más nombres
 
