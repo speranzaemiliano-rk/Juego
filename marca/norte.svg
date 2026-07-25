@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 128" role="img" aria-label="Norte">
+  <defs>
+    <linearGradient id="n" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#12294A"/>
+      <stop offset="1" stop-color="#0B1F3A"/>
+    </linearGradient>
+  </defs>
+  <!-- isotipo: rosa de los vientos, norte en dorado -->
+  <rect x="4" y="4" width="120" height="120" rx="32" fill="url(#n)"/>
+  <path d="M64 22 L72 58 L64 64 L56 58 Z" fill="#F5A623"/>
+  <path d="M64 106 L56 70 L64 64 L72 70 Z" fill="#ffffff" opacity="0.85"/>
+  <path d="M22 64 L58 56 L64 64 L58 72 Z" fill="#ffffff" opacity="0.5"/>
+  <path d="M106 64 L70 56 L64 64 L70 72 Z" fill="#ffffff" opacity="0.5"/>
+  <circle cx="64" cy="64" r="5" fill="#0B1F3A" stroke="#ffffff" stroke-width="3"/>
+  <!-- wordmark -->
+  <text x="150" y="83" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+        font-size="62" font-weight="800" letter-spacing="-1" fill="#12294A">Norte</text>
+</svg>

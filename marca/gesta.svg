@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 128" role="img" aria-label="Gesta">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+  <!-- isotipo: panel/dial + flecha de crecimiento -->
+  <rect x="4" y="4" width="120" height="120" rx="32" fill="url(#g)"/>
+  <circle cx="64" cy="66" r="34" fill="none" stroke="#ffffff" stroke-opacity="0.35"
+          stroke-width="10" stroke-linecap="round" stroke-dasharray="178 40"
+          transform="rotate(58 64 66)"/>
+  <path d="M64 40 L84 70 L72 70 L72 92 L56 92 L56 70 L44 70 Z" fill="#ffffff"/>
+  <!-- wordmark -->
+  <text x="150" y="83" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+        font-size="62" font-weight="800" letter-spacing="-1.5" fill="#4F46E5">Gesta</text>
+</svg>
